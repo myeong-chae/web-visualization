@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Demo{% endblock %}</title>
+    <style>
+
+        .topnav {
+            top: 0;
+            height: 60px;
+            width: 100%;
+            position: fixed;
+            z-index:1;
+            background-color:#02343F;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .topnav .center { 
+            display:flex;
+            align-items:center;
+        }
+
+        .topnav a {
+            text-align: center;
+            margin: 0px 5px 0px 5px;
+        }
+
+        a {
+            color: #F0EDCC;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        a:hover {
+            color: white;
+        }
+
+        .sidemenu {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index:1;
+            top: 60px;
+            left: 0;
+            background-color:#02343F;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidemenu li {
+            margin:10px;
+        }
+
+        .wrap_content {
+            margin-top: 70px;
+            margin-left: 210px;
+            margin-right: 10px;
+        }
+
+        ul {
+            list-style:none;
+            list-style-position: outside;
+        }
+
+        body {
+            margin: 0px;
+            background-color: #F0EDCC;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="topnav">
+        <div class="center">
+            <div class="menu">
+                <a href="{% url 'polls:home' %}">Home</a>
+                <a href="{% url 'polls:board' %}">Board</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidemenu">
+        <ul>
+            <li><a href="{% url 'polls:home' %}">home</a></li>
+            <li><a href="{% url 'polls:board' %}">board</a></li>
+            <li><a href="#">menu3</a></li>
+            <li><a href="#">menu4</a></li>
+        <ul>
+    </div>
+
+    <div class="wrap_content">
+        <div id="content" name="content" class="container">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>

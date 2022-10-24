@@ -1,0 +1,25 @@
+
+
+<form method="get">{% csrf_token %}
+    <div class="col-sm-3" style="float: left;margin-left: 10px; width: 20%;">쿼리 select {{ form.as_p }}
+    <button method = "get" type="submit" class="btn btn-primary">불러오기</button>
+    </div>
+    <div class="col-sm-3" style="display: inline-block;"><header>Query</header><textarea disabled name="test" rows="20" cols="100">
+
+    </textarea></div>
+<!--     
+    <input type="submit" value="Send message"> -->
+</form>
+
+<!-- <style>
+.box1 {float:left; width:200px; height:100px; background-color:#234234;}
+.box2 {display:inline-block; width:200px; height:100px; background-color:#666666; margin-left:10px;}
+</style>
+<body> 
+    <div class="box1">
+
+    </div> 
+    <div class="box2">
+
+    </div>
+</body> -->

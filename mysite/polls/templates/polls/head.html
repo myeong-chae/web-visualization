@@ -1,0 +1,17 @@
+<div style = "text-align:center; margin-bottom:2px;">
+    <div>
+        <h1>KETI DB Monitoring{{ question.question_text }}</h1>
+    </div>
+    <div class="test">
+        <a href="{% url 'polls:post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+        {% for post in object_list %}
+        <h1><a href="/">{{post.author}}</a></h1>
+        {% endfor %}
+    </div>
+    <div>
+        <span>nav1</span>
+        <span>nav2</span>
+        <span>nav3</span>
+        <span>nav4</span>
+    </div>
+</div>

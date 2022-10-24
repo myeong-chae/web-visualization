@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<style>
+
+    body {
+  display: grid;
+  grid-gap: 0.2vw;
+  height: 100vh;
+  grid-template-columns: 150px 1fr;
+  grid-template-rows: 120px 1fr 61px;
+  grid-template-areas: "header   header"
+                       "sidebar content"
+                       "footer footer"; 
+    }
+    div.header {
+    grid-area: header;
+}
+div.sidebar {
+    grid-area: sidebar;
+    background: #0769f3;
+}
+div.footer {
+    grid-area: footer;
+    background: #3581eb;
+}
+div.main {
+    display: grid;  
+    grid-gap: 0.2vw;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(150px, 1fr));
+}
+div.item{
+    background-image: url('https://source.unsplash.com/daily');
+}
+div.main > div.item:nth-child(2)  { 
+  grid-column: 2/span 5;
+  grid-row: 1/span 2;
+}
+    </style>
+    
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Django UI with CSS Grid Layout</title>
+    </head>
+<body>
+<div class="header">
+  <h1>Django UI with CSS Grid Layout</h1>
+</div>
+
+<div class="sidebar">
+.sidebar
+</div>
+
+<div class="main">
+<div class="item">
+    <span>1</span>
+</div>
+<div class="item">
+    <span>2</span>
+</div>
+<div class="item">
+    <span>...</span>
+</div>
+<div class="item">
+    <span>12</span>
+</div>
+</div>
+
+<div class="footer">
+Copyright 2018
+</div>
+</body>
+</html>

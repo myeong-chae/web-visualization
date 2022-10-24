@@ -1,0 +1,1262 @@
+{% extends 'pybo/base.html' %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- <link rel="stylesheet" href="../contrast-bootstrap-pro/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../contrast-bootstrap-pro/css/cdb.css" /> -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/chart/latest/toastui-chart.min.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
+
+    <!-- 
+    <script src="../contrast-bootstrap-pro/js/cdb.js"></script>
+    <script src="../contrast-bootstrap-pro/js/bootstrap.min.js"></script> -->
+    <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
+    <script src="https://uicdn.toast.com/chart/latest/toastui-chart.min.js"></script>
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <script src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
+</head>
+
+
+
+<body>
+    <style>
+        /* .mcgrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 1fr 2fr);
+            grid-gap: 1rem;
+            grid-template-rows: repeat(auto-fit, minmax(80px, auto));
+        } */
+
+        /* .container {
+            display: grid;
+            margin-top: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+        } */
+        /* .container a{
+            display: flex;
+            margin-top: 100px;
+            grid-template-columns: 1fr 2fr 200px 50%;
+        }
+        .box{
+            height: auto;
+            width: auto;
+        } */
+
+
+
+        .button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+            padding: 0.5rem 1rem;
+
+
+            text-align: center;
+            text-decoration: none;
+
+            display: inline-block;
+            width: auto;
+
+            border: none;
+            border-radius: 4px;
+
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+            cursor: pointer;
+
+            transition: 0.5s;
+
+            background: #0d6efd;
+            color: #ffffff;
+        }
+
+        .button:active {
+
+            background-color: #3e8e41;
+
+            box-shadow: 0 5px #666;
+
+            transform: translateY(4px);
+
+        }
+
+        .button:hover {
+            background-color: #1a50a0
+        }
+
+        .button:focus {
+            background: #0d6efd;
+            outline: 0;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+        }
+    </style>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <div class="container">
+        <div class="row row-cols-3 " style="margin-top: 5%; margin-left: 5%;">
+            <div class="col-4">
+                <div class="card">
+                    <h5 class="card-header">SSD Server Utilization</h5>
+                    <canvas id="SSD_Doughnut"></canvas>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <h5 class="card-header">CSD Server Utilization</h5>
+                    <canvas id="CSD_Doughnut"></canvas>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col">
+                        <!-- <div class="card">Server CPU Utilization -->
+                        <canvas id="live1"></canvas>
+                    <!-- </div> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <!-- <div class="card">Server Memory Utilization -->
+                        <canvas id="live2"></canvas>
+                    <!-- </div> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <!-- <div class="card">Server Power Usage(W) -->
+                        <canvas id="live3"></canvas>
+                    <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-cols-1">
+            <div class="col-md-auto">
+                <canvas id="CSDLive" style="width: 80vw; height:20vh ;"></canvas>
+            </div>
+        </div>
+        <div class="row row-cols-4 justify-content-md-end" style="margin-bottom: 10px; margin-top: 10px;">
+            <div class="col-md-auto">
+                <div id="selbox1" style="width: 200px;"></div>
+            </div>
+            <div class="col-md-auto">
+                <div class="button" onclick="serverbox_click();">선택</div>
+            </div>
+            <div class="col-md-auto">
+                <div id="selbox" style="width: 200px;"></div>
+            </div>
+            <div class="col-md-auto">
+                <div class="button" onclick="selbox_click();">선택</div>
+            </div>
+        </div>
+        <div class="row row-cols-3" style="margin-top: 20px;">
+            <div class="col">
+                <canvas id="myChart1"></canvas>
+            </div>
+
+            <div class="col">
+                <canvas id="myChart2"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="myChart3"></canvas>
+            </div>
+        </div>
+
+        <div class="row row-cols-3" style="margin-top: 20px; margin-bottom: 300px;">
+            <div class="col">
+                <canvas id="myChart4"></canvas>
+            </div>
+
+            <div class="col">
+                <canvas id="myChart5"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="myChart6"></canvas>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+
+<script>
+    var SSD_Doughnut_Data = [90, 10]
+    var CSD_Doughnut_Data = [80, 20]
+    var Live1_CSD_Data = [0, 20, 30, 30, 30, 20, 0, 0, 0]
+    var Live1_SSD_Data = [0, 30, 40, 50, 50, 45, 60, 65, 60]
+    var Live2_CSD_Data = [0, 20, 30, 30, 30, 20, 0, 0, 0]
+    var Live2_SSD_Data = [0, 30, 40, 50, 50, 45, 60, 65, 60]
+    var Live3_CSD_Data = [0, 20, 30, 30, 30, 20, 0, 0, 0]
+    var Live3_SSD_Data = [0, 30, 40, 50, 50, 45, 60, 65, 60]
+    var CSDLive_CSD1_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD2_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD3_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD4_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD5_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD6_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD7_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    var CSDLive_CSD8_Data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+    var CPU_Util_Data
+    var Memory_Util_Data
+    var Power_Util_Data
+    var Network_Util_Data
+    var IO_Util_Data
+    var EXE_Time_Data
+</script>
+
+<script>
+
+    var ssdData = {
+        labels: ['Free', 'Used'],
+    }
+    console.log()
+
+    const ctx6 = document.getElementById('SSD_Doughnut').getContext('2d');
+    var myChart6 = new Chart(ctx6, {
+        type: 'doughnut',
+        data: {
+            labels: ['Free', 'Used'],
+            datasets: [{
+                data: SSD_Doughnut_Data,
+                backgroundColor: [
+                    '#277BC0',
+                    '#FA7070'
+                ],
+
+                // borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: 'CSD Utilization'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx7 = document.getElementById('CSD_Doughnut').getContext('2d');
+    var myChart7 = new Chart(ctx7, {
+        type: 'doughnut',
+        data: {
+            labels: ['Free', 'Used'],
+            datasets: [{
+                data: CSD_Doughnut_Data,
+                backgroundColor: [
+                    '#277BC0',
+                    '#FA7070'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: 'SSD Utilization'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx10 = document.getElementById('live1').getContext('2d');
+    var myChart10 = new Chart(ctx10, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            datasets: [{
+                label: 'CSD',
+                data: Live1_CSD_Data,
+                // '#277BC0',
+                // '#FA7070'
+                backgroundColor: [
+                    'rgba(122, 168, 240, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(122, 168, 240, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'SSD',
+                data: Live1_SSD_Data,
+                backgroundColor: [
+                    'rgba(237, 123, 76, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(237, 123, 76, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Server CPU Utilization'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx11 = document.getElementById('live2').getContext('2d');
+    var myChart11 = new Chart(ctx11, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            datasets: [{
+                label: 'CSD',
+                data: Live2_CSD_Data,
+                backgroundColor: [
+                    'rgba(122, 168, 240, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(122, 168, 240, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'SSD',
+                data: Live2_SSD_Data,
+                backgroundColor: [
+                    'rgba(237, 123, 76, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(237, 123, 76, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Server Memory Utilization'
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    const ctx12 = document.getElementById('live3').getContext('2d');
+    var myChart12 = new Chart(ctx12, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            datasets: [{
+                label: 'CSD',
+                data: Live3_CSD_Data,
+                backgroundColor: [
+                    'rgba(122, 168, 240, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(122, 168, 240, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'SSD',
+                data: Live3_SSD_Data,
+                backgroundColor: [
+                    'rgba(237, 123, 76, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(237, 123, 76, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Server Power Usage (W)'
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    const ctxCSD = document.getElementById('CSDLive').getContext('2d');
+    var myChartCSD = new Chart(ctxCSD, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            datasets: [{
+                label: 'CSD1',
+                fill: true,
+                data: CSDLive_CSD1_Data,
+                backgroundColor: [
+                    'rgba(255, 0, 0, 0.1)'
+                ],
+                borderColor: [
+                    'rgba(255, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD2',
+                fill: true,
+                data: CSDLive_CSD2_Data,
+                backgroundColor: [
+                    'rgba(150, 50, 0, 0.1)'
+                ],
+                borderColor: [
+                    'rgba(150, 50, 0, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD3',
+                fill: true,
+                data: CSDLive_CSD3_Data,
+                backgroundColor: [
+                    'rgba(255, 200, 100, 0.1)'
+                ],
+                borderColor: [
+                    'rgba(255, 200, 100, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD4',
+                fill: true,
+                data: CSDLive_CSD4_Data,
+                backgroundColor: [
+                    'rgba(0, 255, 0, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(0, 255, 0, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD5',
+                fill: true,
+                data: CSDLive_CSD5_Data,
+                backgroundColor: [
+                    'rgba(0, 0, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(0, 0, 255, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD6',
+                fill: true,
+                data: CSDLive_CSD6_Data,
+                backgroundColor: [
+                    'rgba(0, 50, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(0, 50, 255, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD7',
+                fill: true,
+                data: CSDLive_CSD7_Data,
+                backgroundColor: [
+                    'rgba(100, 0, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(100, 0, 255, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'CSD8',
+                fill: true,
+                data: CSDLive_CSD8_Data,
+                backgroundColor: [
+                    'rgba(10, 10, 100, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(10, 10, 100, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'CSD Utiliztion'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx = document.getElementById('myChart1').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'CPU Utilization',
+                data: CPU_Util_Data,
+                backgroundColor: [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(150, 50, 0, 0.1)',
+                'rgba(255, 200, 100, 0.1)',
+                'rgba(0, 255, 0, 0.2)',
+                'rgba(0, 0, 255, 0.2)',
+                'rgba(0, 50, 255, 0.2)',
+                'rgba(100, 0, 255, 0.2)',
+                'rgba(10, 10, 100, 0.2)',
+                'rgba(240, 225, 43, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 0, 0, 1)',
+                'rgba(150, 50, 0, 1)',
+                'rgba(255, 200, 100, 1)',
+                'rgba(0, 255, 0, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 50, 255, 1)',
+                'rgba(100, 0, 255, 1)',
+                'rgba(10, 10, 100, 1)',
+                'rgba(240, 225, 43, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'CPU Utilization'
+                }
+            }
+        }
+
+    });
+</script>
+<script>
+    const ctx1 = document.getElementById('myChart2').getContext('2d');
+    var myChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Memory Utilization',
+                data: Memory_Util_Data,
+                backgroundColor: [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(150, 50, 0, 0.1)',
+                'rgba(255, 200, 100, 0.1)',
+                'rgba(0, 255, 0, 0.2)',
+                'rgba(0, 0, 255, 0.2)',
+                'rgba(0, 50, 255, 0.2)',
+                'rgba(100, 0, 255, 0.2)',
+                'rgba(10, 10, 100, 0.2)',
+                'rgba(240, 225, 43, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 0, 0, 1)',
+                'rgba(150, 50, 0, 1)',
+                'rgba(255, 200, 100, 1)',
+                'rgba(0, 255, 0, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 50, 255, 1)',
+                'rgba(100, 0, 255, 1)',
+                'rgba(10, 10, 100, 1)',
+                'rgba(240, 225, 43, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Memory Utilization'
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    const ctx2 = document.getElementById('myChart3').getContext('2d');
+    var myChart2 = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Power Utilization',
+                data: Power_Util_Data,
+                backgroundColor: [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(150, 50, 0, 0.1)',
+                'rgba(255, 200, 100, 0.1)',
+                'rgba(0, 255, 0, 0.2)',
+                'rgba(0, 0, 255, 0.2)',
+                'rgba(0, 50, 255, 0.2)',
+                'rgba(100, 0, 255, 0.2)',
+                'rgba(10, 10, 100, 0.2)',
+                'rgba(240, 225, 43, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 0, 0, 1)',
+                'rgba(150, 50, 0, 1)',
+                'rgba(255, 200, 100, 1)',
+                'rgba(0, 255, 0, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 50, 255, 1)',
+                'rgba(100, 0, 255, 1)',
+                'rgba(10, 10, 100, 1)',
+                'rgba(240, 225, 43, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Power Utilization'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx3 = document.getElementById('myChart4').getContext('2d');
+    var myChart3 = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Network Utilization',
+                data: Network_Util_Data,
+                backgroundColor: [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(150, 50, 0, 0.1)',
+                'rgba(255, 200, 100, 0.1)',
+                'rgba(0, 255, 0, 0.2)',
+                'rgba(0, 0, 255, 0.2)',
+                'rgba(0, 50, 255, 0.2)',
+                'rgba(100, 0, 255, 0.2)',
+                'rgba(10, 10, 100, 0.2)',
+                'rgba(240, 225, 43, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 0, 0, 1)',
+                'rgba(150, 50, 0, 1)',
+                'rgba(255, 200, 100, 1)',
+                'rgba(0, 255, 0, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 50, 255, 1)',
+                'rgba(100, 0, 255, 1)',
+                'rgba(10, 10, 100, 1)',
+                'rgba(240, 225, 43, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Network Tx (KB/s)'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx4 = document.getElementById('myChart5').getContext('2d');
+    var myChart4 = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'I/O Read(KB/s)',
+                data: IO_Util_Data,
+                backgroundColor: [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(150, 50, 0, 0.1)',
+                'rgba(255, 200, 100, 0.1)',
+                'rgba(0, 255, 0, 0.2)',
+                'rgba(0, 0, 255, 0.2)',
+                'rgba(0, 50, 255, 0.2)',
+                'rgba(100, 0, 255, 0.2)',
+                'rgba(10, 10, 100, 0.2)',
+                'rgba(240, 225, 43, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 0, 0, 1)',
+                'rgba(150, 50, 0, 1)',
+                'rgba(255, 200, 100, 1)',
+                'rgba(0, 255, 0, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 50, 255, 1)',
+                'rgba(100, 0, 255, 1)',
+                'rgba(10, 10, 100, 1)',
+                'rgba(240, 225, 43, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'I/O Read(KB/s)'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    const ctx5 = document.getElementById('myChart6').getContext('2d');
+    var myChart5 = new Chart(ctx5, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Execution Time',
+                data: EXE_Time_Data,
+                backgroundColor: [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(150, 50, 0, 0.1)',
+                'rgba(255, 200, 100, 0.1)',
+                'rgba(0, 255, 0, 0.2)',
+                'rgba(0, 0, 255, 0.2)',
+                'rgba(0, 50, 255, 0.2)',
+                'rgba(100, 0, 255, 0.2)',
+                'rgba(10, 10, 100, 0.2)',
+                'rgba(240, 225, 43, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 0, 0, 1)',
+                'rgba(150, 50, 0, 1)',
+                'rgba(255, 200, 100, 1)',
+                'rgba(0, 255, 0, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 50, 255, 1)',
+                'rgba(100, 0, 255, 1)',
+                'rgba(10, 10, 100, 1)',
+                'rgba(240, 225, 43, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Execution Time(s)'
+                }
+            }
+        }
+    });
+</script>
+
+
+
+<!-- <script>
+    class Progressbar1 {
+        constructor(props) {
+            const el = document.createElement('input');
+
+            const customOptions = props.columnInfo.editor.options.customTextEditorOptions;
+
+            el.type = 'text';
+            el.value = String(props.value);
+            // el.value = '11111';
+            print(el.value)
+            print(props.rowkey)
+
+            this.el = el;
+        }
+        getElement() {
+            return this.el;
+        }
+        getValue() {
+            return this.el.value;
+        }
+        mounted() {
+            this.el.select();
+        }
+    }
+
+
+    const Grid = tui.Grid;
+    const instance = new Grid({
+        el: document.getElementById('grid'), // Container element
+        columns: [
+            {
+                header: 'Query',
+                name: 'name',
+                width: '50',
+            },
+            {
+                header: 'Work Num',
+                name: 'artist',
+                width: '50'
+            },
+            {
+                header: 'Summary Work',
+                name: 'release',
+                width: '500'
+            },
+            {
+                header: 'CPU',
+                name: 'cpu',
+                width: '200'
+            },
+            {
+                header: 'Memory',
+                name: 'memory',
+                width: '200'
+            },
+            {
+                header: 'Power',
+                name: 'power',
+                editor: {
+                    type: Progressbar1(),
+                },
+                width: '200'
+            },
+            {
+                header: 'Network',
+                name: 'network',
+                width: '200'
+            }
+        ],
+        data: [
+            {
+                name: '1',
+                artist: '0',
+                release: '2016.0asdasasdaaaaaaaaaaaaaaaaaaadasdasdasdasdadsdad3.26',
+                cpu: '10%',
+                power: 50
+            },
+            {
+                name: '1',
+                artist: '1',
+                release: '2016.0asdasasdaaaaaaaaaaaaaaaaaaadasdasdasdasdadsdad3.26',
+                genre: 'Pop'
+            },
+            {
+                name: '1',
+                artist: '2',
+                release: '2016.0asdasasdaaaaaaaaaaaaaaaaaaadasdasdasdasdadsdad3.26',
+                genre: 'Pop'
+            }
+        ]
+    });
+    Grid.applyTheme('striped'); // Call API of static method
+    instance.resetData(newData); // Call API of instance's public method
+
+
+</script> -->
+
+<script>
+    const SelectBox = tui.SelectBox;
+    const container1 = document.getElementById('selbox1');
+
+
+    const selectBox1 = new SelectBox(container1, {
+        placeholder: 'Please Select Server.',
+        data: [
+        {
+                label: 'Server List',
+                data: [{ label: 'CSD Server1', value: 'CSD1' }, { label: 'CSD Server2', value: 'CSD2' }
+                , { label: 'CSD Server3', value: 'CSD3' }, { label: 'SSD Server1', value: 'SSD1' }
+                , { label: 'SSD Server2', value: 'SSD2' }, { label: 'SSD Server2', value: 'SSD2' }]
+            }
+        ],
+
+    });
+
+    function serverbox_click() {
+        // try {
+        //     console.log(selectBox.getSelectedItem().getLabel())
+        //     // var form = document.createElement('form');
+        //     // form.setAttribute('method','post');
+        //     // form.setAttribute('action','http://10.0.6.1:10111/api/postData');
+        //     // document.characterSet = 'utf-8';
+        //     // document.body.appendChild(selectBox.getSelectedItem().getLabel());
+        //     // sendPost('http://10.0.6.1:10111/api/postData',selectBox.getSelectedItem().getLabel())
+        //     document.post("10.0.6.1:10111/api/postData");
+        // }catch (e){
+        //     console.log("plase select query")
+
+        var jsondata = { "selectbox": selectBox1.getSelectedItem().getValue() }
+        // console.log(jsondata)
+        $.ajax({
+            url: "http://10.0.6.1:10111/api/ServerData", // 요청이 전송될 URL 주소
+            type: "GET", // http 요청 방식 (default: ‘GET’)
+            async: true,  // 요청 시 동기화 여부. 기본은 비동기(asynchronous) 요청 (default: true)
+            cache: true,  // 캐시 여부
+            timeout: 3000, // 요청 제한 시간 안에 완료되지 않으면 요청을 취소하거나 error 콜백을 호출.(단위: ms)
+            data: {"Server":selectBox1.getSelectedItem().getValue()}, // 요청 시 포함되어질 데이터
+            processData: true, // 데이터를 컨텐트 타입에 맞게 변환 여부
+            contentType: "application/json", // 요청 컨텐트 타입 
+            dataType: "json", // 응답 데이터 형식 (명시하지 않을 경우 자동으로 추측)
+            beforeSend: function () {
+                // XHR Header를 포함해서 HTTP Request를 하기전에 호출됩니다.
+            },
+            success: function (data, status, xhr) {
+                // 정상적으로 응답 받았을 경우에는 success 콜백이 호출되게 됩니다.
+                // 이 콜백 함수의 파라미터에서는 응답 바디, 응답 코드 그리고 XHR 헤더를 확인할 수 있습니다.
+                // console.log(data["Labels"])
+                // CPU_Util_Data = data["cpu"]
+                // // console.log(CPU_Util_Data)
+                // Memory_Util_Data = data["memory"]
+                // Power_Util_Data = data["power"]
+                // Network_Util_Data = data["network"]
+                // IO_Util_Data = data["io"]
+                // EXE_Time_Data = data["exe"]
+                
+                myChart.data.labels = data["Labels"]
+                myChart1.data.labels = data["Labels"]
+                myChart2.data.labels = data["Labels"]
+                myChart3.data.labels = data["Labels"]
+                myChart4.data.labels = data["Labels"]
+                myChart5.data.labels = data["Labels"]
+                myChart.data.datasets[0].data = []
+                myChart1.data.datasets[0].data = []
+                myChart2.data.datasets[0].data = []
+                myChart3.data.datasets[0].data = []
+                myChart4.data.datasets[0].data = []
+                myChart5.data.datasets[0].data = []
+                myChart.update()
+                myChart1.update()
+                myChart2.update()
+                myChart3.update()
+                myChart4.update()
+                myChart5.update()
+            },
+            error: function (xhr, status, error) {
+                // 응답을 받지 못하였다거나 정상적인 응답이지만 데이터 형식을 확인할 수 없기 때문에 
+                // error 콜백이 호출될 수 있습니다.
+                // 예를 들어, dataType을 지정해서 응답 받을 데이터 형식을 지정하였지만,
+                // 서버에서는 다른 데이터형식으로 응답하면  error 콜백이 호출되게 됩니다.
+            },
+            complete: function (xhr, status) {
+                // success와 error 콜백이 호출된 후에 반드시 호출됩니다.
+                // try - catch - finally의 finally 구문과 동일합니다.
+            }
+        })
+        // }
+
+    }
+    </script>
+
+<script>
+    // const SelectBox = tui.SelectBox;
+    const container = document.getElementById('selbox');
+
+
+    const selectBox = new SelectBox(container, {
+        placeholder: 'Please Select Query.',
+        data: [
+        {
+                label: 'Query Number',
+                data: [{ label: 'TPC-H 1', value: 'H1' }, { label: 'TPC-H 2', value: 'H2' }, { label: 'TPC-H 3', value: 'H3' }
+                , { label: 'TPC-H 4', value: 'H4' }, { label: 'TPC-H 5', value: 'H5' }, { label: 'TPC-H 6', value: 'H6' }, { label: 'TPC-H 7', value: 'H7' }
+                , { label: 'TPC-H 8', value: 'H8' }, { label: 'TPC-H 9', value: 'H9' }, { label: 'TPC-H 10', value: 'H10' }, { label: 'TPC-H 11', value: 'H11' }
+                , { label: 'TPC-H 12', value: 'H12' }, { label: 'TPC-H 13', value: 'H13' }, { label: 'TPC-H 14', value: 'H14' }, { label: 'TPC-H 15', value: 'H15' }
+                , { label: 'TPC-H 16', value: 'H16' }, { label: 'TPC-H 17', value: 'H17' }, { label: 'TPC-H 18', value: 'H18' }, { label: 'TPC-H 19', value: 'H19' }
+                , { label: 'TPC-H 20', value: 'H20' }, { label: 'TPC-H 21', value: 'H21' }, { label: 'TPC-H 22', value: 'H22' }]
+            }
+        ],
+
+    });
+
+
+    console.log(selectBox.getSelectedItem().getLabel()); // 'Apple'
+    function selbox_click() {
+        // try {
+        //     console.log(selectBox.getSelectedItem().getLabel())
+        //     // var form = document.createElement('form');
+        //     // form.setAttribute('method','post');
+        //     // form.setAttribute('action','http://10.0.6.1:10111/api/postData');
+        //     // document.characterSet = 'utf-8';
+        //     // document.body.appendChild(selectBox.getSelectedItem().getLabel());
+        //     // sendPost('http://10.0.6.1:10111/api/postData',selectBox.getSelectedItem().getLabel())
+        //     document.post("10.0.6.1:10111/api/postData");
+        // }catch (e){
+        //     console.log("plase select query")
+
+        var jsondata = { "Query": selectBox.getSelectedItem().getValue(), "Server":selectBox1.getSelectedItem().getValue() }
+        // console.log(jsondata)
+        $.ajax({
+            url: "http://10.0.6.1:10111/api/DBData", // 요청이 전송될 URL 주소
+            type: "GET", // http 요청 방식 (default: ‘GET’)
+            async: true,  // 요청 시 동기화 여부. 기본은 비동기(asynchronous) 요청 (default: true)
+            cache: true,  // 캐시 여부
+            timeout: 3000, // 요청 제한 시간 안에 완료되지 않으면 요청을 취소하거나 error 콜백을 호출.(단위: ms)
+            data: jsondata, // 요청 시 포함되어질 데이터
+            processData: true, // 데이터를 컨텐트 타입에 맞게 변환 여부
+            contentType: "application/json", // 요청 컨텐트 타입 
+            dataType: "json", // 응답 데이터 형식 (명시하지 않을 경우 자동으로 추측)
+            beforeSend: function () {
+                // XHR Header를 포함해서 HTTP Request를 하기전에 호출됩니다.
+            },
+            success: function (data, status, xhr) {
+                // 정상적으로 응답 받았을 경우에는 success 콜백이 호출되게 됩니다.
+                // 이 콜백 함수의 파라미터에서는 응답 바디, 응답 코드 그리고 XHR 헤더를 확인할 수 있습니다.
+                // console.log(data)
+                CPU_Util_Data = data["cpu"]
+                // console.log(CPU_Util_Data)
+                Memory_Util_Data = data["memory"]
+                Power_Util_Data = data["power"]
+                Network_Util_Data = data["network"]
+                IO_Util_Data = data["io"]
+                EXE_Time_Data = data["exe"]
+                if (selectBox1.getSelectedItem().getValue() == "CSD1" || selectBox1.getSelectedItem().getValue() == "CSD2" || selectBox1.getSelectedItem().getValue() == "CSD3"){
+                    myChart.data.datasets[0].data = data["csd"]["cpu"]
+                    myChart1.data.datasets[0].data = data["csd"]["memory"]
+                    myChart2.data.datasets[0].data = data["csd"]["power"]
+                    myChart3.data.datasets[0].data = data["csd"]["network"]
+                    myChart4.data.datasets[0].data = data["csd"]["io"]
+                    myChart5.data.datasets[0].data = data["csd"]["exe"]
+                    myChart.data.datasets[0].data[8] = data["ssd"]["cpu"][0]
+                    myChart1.data.datasets[0].data[8] = data["ssd"]["memory"][0]
+                    myChart2.data.datasets[0].data[8] = data["ssd"]["power"][0]
+                    myChart3.data.datasets[0].data[8] = data["ssd"]["network"][0]
+                    myChart4.data.datasets[0].data[8] = data["ssd"]["io"][0]
+                    myChart5.data.datasets[0].data[8] = data["ssd"]["exe"][0]
+                }
+                else{
+                    myChart.data.datasets[0].data = data["ssd"]["cpu"]
+                    myChart1.data.datasets[0].data = data["ssd"]["memory"]
+                    myChart2.data.datasets[0].data = data["ssd"]["power"]
+                    myChart3.data.datasets[0].data = data["ssd"]["network"]
+                    myChart4.data.datasets[0].data = data["ssd"]["io"]
+                    myChart5.data.datasets[0].data = data["ssd"]["exe"]
+                }
+                myChart.update()
+                myChart1.update()
+                myChart2.update()
+                myChart3.update()
+                myChart4.update()
+                myChart5.update()
+            },
+            error: function (xhr, status, error) {
+                // 응답을 받지 못하였다거나 정상적인 응답이지만 데이터 형식을 확인할 수 없기 때문에 
+                // error 콜백이 호출될 수 있습니다.
+                // 예를 들어, dataType을 지정해서 응답 받을 데이터 형식을 지정하였지만,
+                // 서버에서는 다른 데이터형식으로 응답하면  error 콜백이 호출되게 됩니다.
+            },
+            complete: function (xhr, status) {
+                // success와 error 콜백이 호출된 후에 반드시 호출됩니다.
+                // try - catch - finally의 finally 구문과 동일합니다.
+            }
+        })
+        // }
+
+    }
+
+
+</script>
+
+<script>
+    function Chart_Update(){
+        $.ajax({
+            url: "http://10.0.6.1:10111/api/ChartData", // 요청이 전송될 URL 주소
+            type: "GET", // http 요청 방식 (default: ‘GET’)
+            async: true,  // 요청 시 동기화 여부. 기본은 비동기(asynchronous) 요청 (default: true)
+            cache: true,  // 캐시 여부
+            timeout: 3000, // 요청 제한 시간 안에 완료되지 않으면 요청을 취소하거나 error 콜백을 호출.(단위: ms)
+            data: [], // 요청 시 포함되어질 데이터
+            processData: true, // 데이터를 컨텐트 타입에 맞게 변환 여부
+            contentType: "application/json", // 요청 컨텐트 타입 
+            dataType: "json", // 응답 데이터 형식 (명시하지 않을 경우 자동으로 추측)
+            beforeSend: function () {
+                // XHR Header를 포함해서 HTTP Request를 하기전에 호출됩니다.
+            },
+            success: function (data, status, xhr) {
+                // 정상적으로 응답 받았을 경우에는 success 콜백이 호출되게 됩니다.
+                // 이 콜백 함수의 파라미터에서는 응답 바디, 응답 코드 그리고 XHR 헤더를 확인할 수 있습니다.
+                // console.log(data)
+                myChart7.data.datasets[0].data=data["csd"]["UTIL"]
+                myChart6.data.datasets[0].data=data["ssd"]["UTIL"]
+                myChart10.data.datasets[0].data=data["csd"]["cpu"]
+                myChart10.data.datasets[1].data=data["ssd"]["cpu"]
+                myChart11.data.datasets[0].data=data["csd"]["memory"]
+                myChart11.data.datasets[1].data=data["ssd"]["memory"]
+                myChart12.data.datasets[0].data=data["csd"]["power"]
+                myChart12.data.datasets[1].data=data["ssd"]["power"]
+                myChartCSD.data.datasets[0].data=data["csd"]["1"]
+                myChartCSD.data.datasets[1].data=data["csd"]["2"]
+                myChartCSD.data.datasets[2].data=data["csd"]["3"]
+                myChartCSD.data.datasets[3].data=data["csd"]["4"]
+                myChartCSD.data.datasets[4].data=data["csd"]["5"]
+                myChartCSD.data.datasets[5].data=data["csd"]["6"]
+                myChartCSD.data.datasets[6].data=data["csd"]["7"]
+                myChartCSD.data.datasets[7].data=data["csd"]["8"]
+
+                // myChart6.data.labels = data["Time"]["timearray"]
+                // myChart7.data.labels = data["Time"]["timearray"]
+                myChart10.data.labels = data["Time"]["timearray"]
+                myChart11.data.labels = data["Time"]["timearray"]
+                myChart12.data.labels = data["Time"]["timearray"]
+                myChartCSD.data.labels = data["Time"]["timearray"]
+
+
+                myChart6.update()
+                myChart7.update()
+                myChart10.update()
+                myChart11.update()
+                myChart12.update()
+                myChartCSD.update()
+                
+            },
+            error: function (xhr, status, error) {
+                // 응답을 받지 못하였다거나 정상적인 응답이지만 데이터 형식을 확인할 수 없기 때문에 
+                // error 콜백이 호출될 수 있습니다.
+                // 예를 들어, dataType을 지정해서 응답 받을 데이터 형식을 지정하였지만,
+                // 서버에서는 다른 데이터형식으로 응답하면  error 콜백이 호출되게 됩니다.
+            },
+            complete: function (xhr, status) {
+                // success와 error 콜백이 호출된 후에 반드시 호출됩니다.
+                // try - catch - finally의 finally 구문과 동일합니다.
+            }
+        })
+    }
+    Chart_Update()
+    setInterval(Chart_Update,10000)
+</script>
+
+
+
+{% endblock %}

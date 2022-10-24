@@ -1,0 +1,337 @@
+{% extends 'pybo/base.html' %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- <link rel="stylesheet" href="../contrast-bootstrap-pro/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../contrast-bootstrap-pro/css/cdb.css" /> -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/chart/latest/toastui-chart.min.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/select-box/latest/toastui-select-box.css" />
+
+
+    <!-- 
+    <script src="../contrast-bootstrap-pro/js/cdb.js"></script>
+    <script src="../contrast-bootstrap-pro/js/bootstrap.min.js"></script> -->
+    <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
+    <script src="https://uicdn.toast.com/chart/latest/toastui-chart.min.js"></script>
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <script src="https://uicdn.toast.com/select-box/latest/toastui-select-box.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
+
+</head>
+
+
+
+<body>
+    <style>
+        /* .mcgrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 1fr 2fr);
+            grid-gap: 1rem;
+            grid-template-rows: repeat(auto-fit, minmax(80px, auto));
+        } */
+
+        /* .container {
+            display: grid;
+            margin-top: 100px;
+            grid-template-columns: 1fr 1fr 1fr;
+        } */
+        /* .container a{
+            display: flex;
+            margin-top: 100px;
+            grid-template-columns: 1fr 2fr 200px 50%;
+        }
+        .box{
+            height: auto;
+            width: auto;
+        } */
+
+
+
+        .button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+            padding: 0.5rem 1rem;
+
+
+            text-align: center;
+            text-decoration: none;
+
+            display: inline-block;
+            width: auto;
+
+            border: none;
+            border-radius: 4px;
+
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+            cursor: pointer;
+
+            transition: 0.5s;
+
+            background: #0d6efd;
+            color: #ffffff;
+        }
+
+        .button:active {
+
+            background-color: #3e8e41;
+
+            box-shadow: 0 5px #666;
+
+            transform: translateY(4px);
+
+        }
+
+        .button:hover {
+            background-color: #1a50a0
+        }
+
+        .button:focus {
+            background: #0d6efd;
+            outline: 0;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+        }
+    </style>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <div class="container">
+        <div class="row row-cols-2 justify-content-md-end" style="margin-bottom: 10px; margin-top: 50px;">
+            <div class="col-md-auto">
+                <div id="runbox" style="width: 200px; z-index: 10;"></div>
+            </div>
+            <div class="col-md-auto">
+                <!-- <form action="http://10.0.6.1:10111/api/postData" method="post">
+                    <div class="button">선택</div>
+                    <button type="button" formmethod="post">선택</button>
+                </form> -->
+                <div class="button" onclick="runbox_click();">선택</div>
+            </div>
+        </div>
+        <div class="row row-cols-1">
+            <div class="col" style="margin-bottom: 100px; z-index: 0;">
+                <div id="grid11"></div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1">
+            <div class="col" style="margin-bottom: 100px; z-index: 0;">
+                <textarea id="queryresult" style="width: 80vw; height: 50vh;" disabled></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+<script>
+
+    const SelectBox = tui.SelectBox;
+    const container1 = document.getElementById('runbox');
+
+
+    const selectBox1 = new SelectBox(container1, {
+        placeholder: 'Please Select Query.',
+        data: [
+            {
+                label: 'Query Number',
+                data: [{ label: 'TPC-H 1', value: 'H1' }, { label: 'TPC-H 2', value: 'H2' }, { label: 'TPC-H 3', value: 'H3' }
+                    , { label: 'TPC-H 4', value: 'H4' }, { label: 'TPC-H 5', value: 'H5' }, { label: 'TPC-H 6', value: 'H6' }, { label: 'TPC-H 7', value: 'H7' }
+                    , { label: 'TPC-H 8', value: 'H8' }, { label: 'TPC-H 9', value: 'H9' }, { label: 'TPC-H 10', value: 'H10' }, { label: 'TPC-H 11', value: 'H11' }
+                    , { label: 'TPC-H 12', value: 'H12' }, { label: 'TPC-H 13', value: 'H13' }, { label: 'TPC-H 14', value: 'H14' }, { label: 'TPC-H 15', value: 'H15' }
+                    , { label: 'TPC-H 16', value: 'H16' }, { label: 'TPC-H 17', value: 'H17' }, { label: 'TPC-H 18', value: 'H18' }, { label: 'TPC-H 19', value: 'H19' }
+                    , { label: 'TPC-H 20', value: 'H20' }, { label: 'TPC-H 21', value: 'H21' }, { label: 'TPC-H 22', value: 'H22' }]
+            }
+        ],
+
+    });
+
+    var dataSource = {
+        contentType: 'application/json',
+        api: {
+            readData: { url: 'http://10.0.6.1:10111/api/readData', method: 'GET', initParams: { param: 'param' } }
+        },
+        // withCredentials: true,
+        initialRequest: false // 디폴트 값은 true
+
+        // initalRequest: false
+    }
+
+</script>
+
+<script>
+    const Grid = tui.Grid;
+    class CustomSliderRenderer {
+        constructor(props) {
+            const el = document.createElement('input');
+            const { min, max } = props.columnInfo.renderer.options;
+
+            el.type = 'range';
+            el.min = String(min);
+            el.max = String(max);
+            el.disabled = true;
+
+            this.el = el;
+            this.render(props);
+        }
+
+        getElement() {
+            return this.el;
+        }
+
+        render(props) {
+            this.el.value = String(props.value);
+        }
+    }
+
+
+
+
+    const newgrid = new Grid({
+        el: document.getElementById('grid11'),
+        scrollX: false,
+        scrollY: false,
+        data: dataSource,
+        columns: [
+            {
+                header: 'Query',
+                name: 'querynum',
+                editor: 'text',
+                width: '50'
+            },
+            {
+                header: 'Work',
+                name: 'worknum',
+                editor: 'text',
+                width: '50'
+            },
+            {
+                header: 'Summary Work',
+                name: 'smw',
+                // formatter: 'listItemText',
+                editor: 'text',
+                width: '500'
+            },
+            {
+                header: 'CPU',
+                name: 'cpu',
+                // formatter: 'listItemText',
+                renderer: {
+                    type: CustomSliderRenderer,
+                    options: {
+                        min: 0,
+                        max: 100
+                    }
+                },
+                editor: 'text',
+                width: '200'
+            },
+            {
+                header: 'Memory',
+                name: 'memory',
+                renderer: {
+                    type: CustomSliderRenderer,
+                    options: {
+                        min: 0,
+                        max: 100
+                    }
+                },
+                editor: 'text',
+                width: '200'
+            },
+            {
+                header: 'Power',
+                name: 'power',
+                renderer: {
+                    type: CustomSliderRenderer,
+                    options: {
+                        min: 0,
+                        max: 100
+                    }
+                },
+                editor: 'text',
+                width: '200'
+            }
+        ],
+        summary: {
+            height: 40,
+            position: 'bottom',
+            columnContent: {
+                result: {
+
+                }
+            }
+        }
+
+    });
+    newgrid.on('beforeChange', ev => {
+        console.log('before change:', ev);
+    });
+    newgrid.on('afterChange', ev => {
+        console.log('after change:', ev);
+    })
+
+    // console.log(newgrid.readData())
+    // newgrid.resetData(newData);
+    console.log(dataSource)
+
+    function runbox_click() {
+
+        var jsondata = { "selectbox": selectBox1.getSelectedItem().getValue() }
+        // console.log(jsondata)
+        // newgrid.request('readData')
+        // newgrid.readData(selectBox1.getSelectedItem().getValue())
+        newgrid.readData(selectBox1.getSelectedItem().getValue())
+
+
+        $.ajax({
+            url: "http://10.0.6.1:10111/api/runData", // 요청이 전송될 URL 주소
+            type: "POST", // http 요청 방식 (default: ‘GET’)
+            async: true,  // 요청 시 동기화 여부. 기본은 비동기(asynchronous) 요청 (default: true)
+            cache: true,  // 캐시 여부
+            timeout: 300000, // 요청 제한 시간 안에 완료되지 않으면 요청을 취소하거나 error 콜백을 호출.(단위: ms)
+            data: JSON.stringify(jsondata), // 요청 시 포함되어질 데이터
+            processData: true, // 데이터를 컨텐트 타입에 맞게 변환 여부
+            contentType: "application/json", // 요청 컨텐트 타입 
+            dataType: "json", // 응답 데이터 형식 (명시하지 않을 경우 자동으로 추측)
+            beforeSend: function () {
+                // XHR Header를 포함해서 HTTP Request를 하기전에 호출됩니다.
+            },
+            success: function (data, status, xhr) {
+                // 정상적으로 응답 받았을 경우에는 success 콜백이 호출되게 됩니다.
+                // 이 콜백 함수의 파라미터에서는 응답 바디, 응답 코드 그리고 XHR 헤더를 확인할 수 있습니다.
+                console.log(data)
+                $("#queryresult").val(data["Result"])
+            },
+            error: function (xhr, status, error) {
+                // 응답을 받지 못하였다거나 정상적인 응답이지만 데이터 형식을 확인할 수 없기 때문에 
+                // error 콜백이 호출될 수 있습니다.
+                // 예를 들어, dataType을 지정해서 응답 받을 데이터 형식을 지정하였지만,
+                // 서버에서는 다른 데이터형식으로 응답하면  error 콜백이 호출되게 됩니다.
+
+                console.log(xhr)
+                console.log(status)
+                console.log(error)
+            },
+            complete: function (xhr, status) {
+                // success와 error 콜백이 호출된 후에 반드시 호출됩니다.
+                // try - catch - finally의 finally 구문과 동일합니다.
+            }
+        })
+    }
+</script>
+
+
+
+{% endblock %}
