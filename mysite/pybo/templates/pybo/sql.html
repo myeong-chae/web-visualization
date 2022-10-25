@@ -305,11 +305,11 @@
 
     function runbox_click() {
 
-        var jsondata = { "selectbox": selectBox1.getSelectedItem().getValue() }
+        var jsondata = { "selectbox": selectBox1.getSelectedItem().getValue(), "serverbox" : selectBox2.getSelectedItem().getValue() }
         // console.log(jsondata)
         // newgrid.request('readData')
         // newgrid.readData(selectBox1.getSelectedItem().getValue())
-        newgrid.readData(selectBox1.getSelectedItem().getValue())
+        newgrid.readData(jsondata)
 
 
         $.ajax({
