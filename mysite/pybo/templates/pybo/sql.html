@@ -107,15 +107,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <div class="container">
-        <div class="row row-cols-2 justify-content-md-end" style="margin-bottom: 10px; margin-top: 50px;">
+        <div class="row row-cols-3 justify-content-md-end" style="margin-bottom: 10px; margin-top: 50px;">
+            <div class="col-md-auto">
+                <div id="serverbox" style="width: 200px; z-index: 10;"></div>
+            </div>
             <div class="col-md-auto">
                 <div id="runbox" style="width: 200px; z-index: 10;"></div>
             </div>
             <div class="col-md-auto">
-                <!-- <form action="http://10.0.6.1:10111/api/postData" method="post">
-                    <div class="button">선택</div>
-                    <button type="button" formmethod="post">선택</button>
-                </form> -->
                 <div class="button" onclick="runbox_click();">선택</div>
             </div>
         </div>
@@ -138,6 +137,24 @@
 <script>
 
     const SelectBox = tui.SelectBox;
+    const container2 = document.getElementById('serverbox');
+
+
+    const selectBox2 = new SelectBox(container2, {
+        placeholder: 'Please Select Server.',
+        data: [
+            {
+                label: 'Select Server',
+                data: [{ label: 'CSD Server', value: 'CSD' }, { label: 'SSD Server', value: 'SSD' }, { label: 'Simulator', value: 'Simul' }]
+            }
+        ],
+
+    });
+</script>
+
+<script>
+
+    // const SelectBox = tui.SelectBox;
     const container1 = document.getElementById('runbox');
 
 
